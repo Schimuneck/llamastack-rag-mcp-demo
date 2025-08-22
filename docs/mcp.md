@@ -26,3 +26,26 @@
 
 7. Get data
 ```psql -d currys_salesforce -c "SELECT * FROM customers;"```
+
+8. Add MCP server to Cursor settings and enable MCP tools:
+
+Eg. json file:
+```
+{
+  "mcpServers": {
+    "mcp-for-currys-salesforce-server": {
+      "command": "/Users/iamiller/GitHub/llamastack-rag-mcp-demo/.venv/bin/python",
+      "args": [
+        "/Users/iamiller/GitHub/llamastack-rag-mcp-demo/mcp_server/mcp_server.py"
+      ],
+      "description": "MCP server for Currys Salesforce"
+    }
+  }
+}
+```
+
+9. Run MCP server:
+
+```cd mcp_server```
+
+```uv run python mcp_server.py```
