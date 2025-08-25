@@ -10,8 +10,8 @@ import asyncio
 logger = setup_logger()
 
 db = DatabaseManager.get_instance()
-mcp = FastMCP("currys_salesforce")
-logger.info("MCP Server initialized: currys_salesforce")
+mcp = FastMCP("eletroshop_sales")
+logger.info("MCP Server initialized: eletroshop_sales")
 
     
 @mcp.tool()
@@ -202,11 +202,11 @@ async def get_products() -> List[Dict[str, Any]]:
 
 
 if __name__ == "__main__":
-    logger.info("Starting MCP server on http://127.0.0.1:8000/mcp")
+    logger.info("Starting ElectroShop Sales MCP server on http://127.0.0.1:8000/mcp")
     try:
         # this is will be used for Llama Stack
-        # mcp.run(transport="http", host="127.0.0.1", port=8000, path="/mcp")
-        asyncio.run(mcp.run()) # this is will be used for Cursor testing
+        mcp.run(transport="http", host="127.0.0.1", port=8000, path="/mcp")
+        # asyncio.run(mcp.run()) # this is will be used for Cursor testing
     except KeyboardInterrupt:
         logger.info("Server stopped by user")
         db.close()

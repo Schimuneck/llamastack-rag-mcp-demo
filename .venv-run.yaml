@@ -1,0 +1,115 @@
+version: 2
+image_name: /Users/schimuneck/projects/redhat/llamastack/llamastack-rag-mcp-demo/.venv
+container_image: null
+apis:
+- inference
+- vector_io
+- files
+- tool_runtime
+- agents
+- safety
+- telemetry
+- eval
+- scoring
+- datasetio
+providers:
+  inference:
+  - provider_id: ollama
+    provider_type: remote::ollama
+    config:
+      url: ${env.OLLAMA_URL:=http://localhost:11434}
+    module: null
+  vector_io:
+  - provider_id: milvus
+    provider_type: inline::milvus
+    config:
+      db_path: ${env.MILVUS_DB_PATH:=~/.llama/distributions//Users/schimuneck/projects/redhat/llamastack/llamastack-rag-mcp-demo/.venv}/milvus.db
+      kvstore:
+        type: sqlite
+        db_path: ${env.SQLITE_STORE_DIR:=~/.llama/distributions//Users/schimuneck/projects/redhat/llamastack/llamastack-rag-mcp-demo/.venv}/milvus_registry.db
+    module: null
+  files:
+  - provider_id: localfs
+    provider_type: inline::localfs
+    config:
+      storage_dir: ${env.FILES_STORAGE_DIR:=~/.llama/distributions//Users/schimuneck/projects/redhat/llamastack/llamastack-rag-mcp-demo/.venv/files}
+      metadata_store:
+        type: sqlite
+        db_path: ${env.SQLITE_STORE_DIR:=~/.llama/distributions//Users/schimuneck/projects/redhat/llamastack/llamastack-rag-mcp-demo/.venv}/files_metadata.db
+    module: null
+  tool_runtime:
+  - provider_id: rag-runtime
+    provider_type: inline::rag-runtime
+    config: {}
+    module: null
+  - provider_id: model-context-protocol
+    provider_type: remote::model-context-protocol
+    config: {}
+    module: null
+  agents:
+  - provider_id: meta-reference
+    provider_type: inline::meta-reference
+    config:
+      persistence_store:
+        type: sqlite
+        db_path: ${env.SQLITE_STORE_DIR:=~/.llama/distributions//Users/schimuneck/projects/redhat/llamastack/llamastack-rag-mcp-demo/.venv}/agents_store.db
+      responses_store:
+        type: sqlite
+        db_path: ${env.SQLITE_STORE_DIR:=~/.llama/distributions//Users/schimuneck/projects/redhat/llamastack/llamastack-rag-mcp-demo/.venv}/responses_store.db
+    module: null
+  safety:
+  - provider_id: llama-guard
+    provider_type: inline::llama-guard
+    config:
+      excluded_categories: []
+    module: null
+  telemetry:
+  - provider_id: meta-reference
+    provider_type: inline::meta-reference
+    config:
+      service_name: "${env.OTEL_SERVICE_NAME:=\u200B}"
+      sinks: ${env.TELEMETRY_SINKS:=console,sqlite}
+      sqlite_db_path: ${env.SQLITE_STORE_DIR:=~/.llama/distributions//Users/schimuneck/projects/redhat/llamastack/llamastack-rag-mcp-demo/.venv}/trace_store.db
+      otel_exporter_otlp_endpoint: ${env.OTEL_EXPORTER_OTLP_ENDPOINT:=}
+    module: null
+  eval:
+  - provider_id: meta-reference
+    provider_type: inline::meta-reference
+    config:
+      kvstore:
+        type: sqlite
+        db_path: ${env.SQLITE_STORE_DIR:=~/.llama/distributions//Users/schimuneck/projects/redhat/llamastack/llamastack-rag-mcp-demo/.venv}/meta_reference_eval.db
+    module: null
+  scoring:
+  - provider_id: basic
+    provider_type: inline::basic
+    config: {}
+    module: null
+  datasetio:
+  - provider_id: localfs
+    provider_type: inline::localfs
+    config:
+      kvstore:
+        type: sqlite
+        db_path: ${env.SQLITE_STORE_DIR:=~/.llama/distributions//Users/schimuneck/projects/redhat/llamastack/llamastack-rag-mcp-demo/.venv}/localfs_datasetio.db
+    module: null
+metadata_store: null
+inference_store: null
+models: []
+shields: []
+vector_dbs: []
+datasets: []
+scoring_fns: []
+benchmarks: []
+tool_groups: []
+logging: null
+server:
+  port: 8321
+  tls_certfile: null
+  tls_keyfile: null
+  tls_cafile: null
+  auth: null
+  host: null
+  quota: null
+external_providers_dir: /Users/schimuneck/.llama/providers.d
+external_apis_dir: null

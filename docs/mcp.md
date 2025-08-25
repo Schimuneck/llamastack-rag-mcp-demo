@@ -25,7 +25,7 @@
 ```./scripts/create_db_and_insert_data.sh```
 
 7. Get data
-```psql -d currys_salesforce -c "SELECT * FROM customers;"```
+```psql -d electroshop_sales -c "SELECT * FROM customers;"```
 
 8. Add MCP server to Cursor settings and enable MCP tools:
 
@@ -33,12 +33,12 @@ Eg. json file:
 ```
 {
   "mcpServers": {
-    "mcp-for-currys-salesforce-server": {
+    "mcp-for-electroshop-sales-server": {
       "command": "/Users/iamiller/GitHub/llamastack-rag-mcp-demo/.venv/bin/python",
       "args": [
         "/Users/iamiller/GitHub/llamastack-rag-mcp-demo/mcp_server/mcp_server.py"
       ],
-      "description": "MCP server for Currys Salesforce"
+      "description": "MCP server for ElectroShop Sales"
     }
   }
 }

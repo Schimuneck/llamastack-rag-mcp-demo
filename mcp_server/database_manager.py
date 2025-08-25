@@ -3,7 +3,7 @@ import threading
 from typing import Optional
 import logging
 
-logger = logging.getLogger("currys_salesforce_db")
+logger = logging.getLogger("electroshop_sales_db")
 
 class DatabaseManager:
     """
@@ -27,7 +27,7 @@ class DatabaseManager:
             return
             
         try:
-            self.conn = psycopg2.connect(database="currys_salesforce")
+            self.conn = psycopg2.connect(database="electroshop_sales")
             self.cursor = self.conn.cursor()
             self._initialized = True
             logger.info("Database connection established successfully")

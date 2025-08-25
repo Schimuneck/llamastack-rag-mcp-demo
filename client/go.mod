@@ -2,10 +2,7 @@ module llama-stack-client
 
 go 1.21
 
-require (
-	github.com/openai/openai-go v1.12.0
-	github.com/openai/openai-go/v2 v2.1.0
-)
+require github.com/llamastack/llama-stack-client-go v0.1.0-alpha.1
 
 require (
 	github.com/tidwall/gjson v1.18.0 // indirect

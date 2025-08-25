@@ -1,11 +1,11 @@
 # Terminate active connections to the database
-psql -d postgres -c "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'currys_salesforce' AND pid <> pg_backend_pid();"
+psql -d postgres -c "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'electroshop_sales' AND pid <> pg_backend_pid();"
 
 # Drop the database
-psql -d postgres -c "DROP DATABASE IF EXISTS currys_salesforce;"
-psql -d postgres -c "CREATE DATABASE currys_salesforce;"
+psql -d postgres -c "DROP DATABASE IF EXISTS electroshop_sales;"
+psql -d postgres -c "CREATE DATABASE electroshop_sales;"
 
-psql -d currys_salesforce <<'SQL'
+psql -d electroshop_sales <<'SQL'
 -- Drop tables in correct order (child tables first)
 DROP TABLE IF EXISTS orders CASCADE;
 DROP TABLE IF EXISTS products CASCADE;

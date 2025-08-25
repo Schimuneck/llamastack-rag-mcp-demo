@@ -1,0 +1,30 @@
+version: 2
+distribution_spec:
+  description: Development configuration without HuggingFace dependencies
+  providers:
+    inference:
+    - provider_type: remote::ollama
+    vector_io:
+    - provider_type: inline::milvus
+    files:
+    - provider_type: inline::localfs
+    tool_runtime:
+    - provider_type: inline::rag-runtime
+    - provider_type: remote::model-context-protocol
+    agents:
+    - provider_type: inline::meta-reference
+    safety:
+    - provider_type: inline::llama-guard
+    telemetry:
+    - provider_type: inline::meta-reference
+    eval:
+    - provider_type: inline::meta-reference
+    scoring:
+    - provider_type: inline::basic
+    datasetio:
+    - provider_type: inline::localfs
+image_type: venv
+additional_pip_packages:
+- aiosqlite
+- sqlalchemy[asyncio]
+- pymilvus>=2.4.10
