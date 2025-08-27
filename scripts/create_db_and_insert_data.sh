@@ -1,11 +1,11 @@
 # Terminate active connections to the database
-psql -d postgres -c "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'electroshop_sales' AND pid <> pg_backend_pid();"
+psql -d postgres -c "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'calabaceira_sales' AND pid <> pg_backend_pid();"
 
 # Drop the database
-psql -d postgres -c "DROP DATABASE IF EXISTS electroshop_sales;"
-psql -d postgres -c "CREATE DATABASE electroshop_sales;"
+psql -d postgres -c "DROP DATABASE IF EXISTS calabaceira_sales;"
+psql -d postgres -c "CREATE DATABASE calabaceira_sales;"
 
-psql -d electroshop_sales <<'SQL'
+psql -d calabaceira_sales <<'SQL'
 -- Drop tables in correct order (child tables first)
 DROP TABLE IF EXISTS orders CASCADE;
 DROP TABLE IF EXISTS products CASCADE;
@@ -30,19 +30,16 @@ CREATE TABLE products (
 );
 
 CREATE TABLE orders (
-  order_id              SERIAL PRIMARY KEY,
-  customer_id           integer NOT NULL,
-  product_id            integer NOT NULL,
-  order_date            timestamp NOT NULL,
+  order_id                  SERIAL PRIMARY KEY,
+  customer_id               integer NOT NULL,
+  product_id                integer NOT NULL,
+  order_date                timestamp NOT NULL,
   FOREIGN KEY (customer_id) REFERENCES customers(customer_id),
-  FOREIGN KEY (product_id) REFERENCES products(product_id)
+  FOREIGN KEY (product_id)  REFERENCES products(product_id)
 );
 
--- Insert test customer
-INSERT INTO customers (first_name, last_name, address, city, country, phone_number, email) 
-VALUES ('John', 'Doe', '123 Main Street', 'San Francisco', 'USA', '+1-555-0123', 'john.doe@example.com');
 
--- Insert test products
+-- Insert products
 INSERT INTO products (product_name, price, category) VALUES
 ('Wireless Logitech Keyboard', 79.99, 'Computer Accessories'),
 ('MacBook Pro', 1999.99, 'Laptops'),

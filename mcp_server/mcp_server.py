@@ -1,21 +1,21 @@
+from datetime import datetime
 from typing import Any, Dict, List
 from fastmcp import FastMCP
 from logger import setup_logger
 from database_manager import DatabaseManager
 import sys
 import psycopg2
-from datetime import datetime
-import asyncio
+
 
 logger = setup_logger()
 
 db = DatabaseManager.get_instance()
-mcp = FastMCP("eletroshop_sales")
-logger.info("MCP Server initialized: eletroshop_sales")
+mcp = FastMCP("calabaceira_sales")
+logger.info("MCP Server initialized: calabaceira_sales")
 
     
 @mcp.tool()
-async def get_customers() -> List[Dict[str, Any]]:
+def get_customers() -> List[Dict[str, Any]]:
     """Returns list of registered customers
     """
 
@@ -46,7 +46,7 @@ async def get_customers() -> List[Dict[str, Any]]:
 
 
 @mcp.tool()
-async def insert_customer_into_db(customer_data: Dict[str, str]) -> Dict[str, Any]:
+def insert_customer_into_db(customer_data: Dict[str, str]) -> Dict[str, Any]:
     """Add new customer to database
     Args:
         customer_data:
@@ -95,8 +95,51 @@ async def insert_customer_into_db(customer_data: Dict[str, str]) -> Dict[str, An
         logger.error(f"Database error: {e}")
         raise RuntimeError(f"Failed to insert customer into database due to database error: {str(e)}")
 
+    
+
 @mcp.tool()
-async def place_order(customer_id: int, product_id: int) -> Dict[str, Any]:
+def get_products() -> List[Dict[str, Any]]:
+    """Get all available products from the database
+    
+    Returns:
+        List of dictionaries containing product details
+    
+    Raises:
+        RuntimeError: If database operation fails
+    """
+    logger.info("get_products tool called")
+    
+    try:
+        query = "SELECT product_id, product_name, price, category FROM products ORDER BY category, product_name"
+        db.cursor.execute(query)
+        products = db.cursor.fetchall()
+        
+        if not products:
+            logger.info("No products found in database")
+            return []
+        
+        product_list = []
+        for product in products:
+            product_list.append({
+                "product_id": product[0],
+                "name": product[1],
+                "price": float(product[2]) if product[2] else 0.0,
+                "category": product[3]
+            })
+        
+        logger.info(f"Retrieved {len(product_list)} products")
+        return product_list
+        
+    except psycopg2.Error as e:
+        db.conn.rollback()
+        logger.error(f"Database error during product retrieval: {e}")
+        raise RuntimeError(f"Failed to retrieve products due to database error: {str(e)}")
+    except Exception as e:
+        logger.error(f"Unexpected error during product retrieval: {e}")
+        raise RuntimeError(f"Failed to retrieve products: {str(e)}")
+
+@mcp.tool()
+def place_order(customer_id: int, product_id: int) -> Dict[str, Any]:
     """Create new order in the database for specific customer
     
     Args:
@@ -152,57 +195,14 @@ async def place_order(customer_id: int, product_id: int) -> Dict[str, Any]:
     except psycopg2.Error as e:
         db.conn.rollback()
         logger.error(f"Database error during order placement: {e}")
-        raise RuntimeError(f"Failed to place order due to database error: {str(e)}")
+        return f"Failed to place order due to database error: {str(e)}"
     except Exception as e:
         db.conn.rollback()
         logger.error(f"Unexpected error during order placement: {e}")
-        raise RuntimeError(f"Failed to place order: {str(e)}")
-    
-
-@mcp.tool()
-async def get_products() -> List[Dict[str, Any]]:
-    """Get all available products from the database
-    
-    Returns:
-        List of dictionaries containing product details
-    
-    Raises:
-        RuntimeError: If database operation fails
-    """
-    logger.info("get_products tool called")
-    
-    try:
-        query = "SELECT product_id, product_name, price, category FROM products ORDER BY category, product_name"
-        db.cursor.execute(query)
-        products = db.cursor.fetchall()
-        
-        if not products:
-            logger.info("No products found in database")
-            return []
-        
-        product_list = []
-        for product in products:
-            product_list.append({
-                "product_id": product[0],
-                "name": product[1],
-                "price": float(product[2]) if product[2] else 0.0,
-                "category": product[3]
-            })
-        
-        logger.info(f"Retrieved {len(product_list)} products")
-        return product_list
-        
-    except psycopg2.Error as e:
-        db.conn.rollback()
-        logger.error(f"Database error during product retrieval: {e}")
-        raise RuntimeError(f"Failed to retrieve products due to database error: {str(e)}")
-    except Exception as e:
-        logger.error(f"Unexpected error during product retrieval: {e}")
-        raise RuntimeError(f"Failed to retrieve products: {str(e)}")
-
+        return f"Failed to place order: {str(e)}"
 
 if __name__ == "__main__":
-    logger.info("Starting ElectroShop Sales MCP server on http://127.0.0.1:8000/mcp")
+    logger.info("Starting Calabaceira Sales MCP server on http://127.0.0.1:8000/mcp")
     try:
         # this is will be used for Llama Stack
         mcp.run(transport="http", host="127.0.0.1", port=8000, path="/mcp")

@@ -5,7 +5,7 @@ import sys
 # Configure logging
 def setup_logger():
     """Configure and return a logger with proper formatting"""
-    logger = logging.getLogger("electroshop_sales")
+    logger = logging.getLogger("calabaceira_sales")
     logger.setLevel(logging.INFO)
     
     # Remove any existing handlers to avoid duplicate logs
